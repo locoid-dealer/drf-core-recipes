@@ -36,7 +36,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # サードパーティアプリ
     "rest_framework",
+    # プロダクトのアプリ
+    "todo",
 ]
 
 MIDDLEWARE = [
