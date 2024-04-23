@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import TodoGenericViewSet, TodoModelViewSet
+from .views import TodoGenericViewSet, TodoModelViewSet, TodoViewSet
 
 urlpatterns = [
     path(
@@ -36,5 +36,22 @@ urlpatterns = [
             }
         ),
         name="todo_generic_viewset_detail",
+    ),
+    path(
+        "todo/viewset/",
+        TodoViewSet.as_view({"get": "list", "post": "create"}),
+        name="todo_viewset",
+    ),
+    path(
+        "todo/viewset/<int:pk>/",
+        TodoViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+        name="todo_viewset_detail",
     ),
 ]
