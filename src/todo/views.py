@@ -78,3 +78,33 @@ class TodoViewSet(viewsets.ViewSet):
         todo.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TodoListAPIView(generics.ListAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TodoCreateAPIView(generics.CreateAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TodoRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TodoUpdateAPIView(generics.UpdateAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TodoDestroyAPIView(generics.DestroyAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
