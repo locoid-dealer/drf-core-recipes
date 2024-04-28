@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, permissions, status, viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -166,4 +167,50 @@ class TodoDetailAPIView(APIView):
         todo = get_object_or_404(queryset, pk=pk)
         todo.delete()
 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET", "POST"])
+@permission_classes([permissions.IsAuthenticated])
+def todo_list_create(request):
+    if request.method == "GET":
+        queryset = Todo.objects.all()
+        serializer = TodoModelSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = TodoModelSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "PUT", "PATCH", "DELETE"])
+@permission_classes([permissions.IsAuthenticated])
+def todo_detail(request, pk):
+    queryset = Todo.objects.all()
+    todo = get_object_or_404(queryset, pk=pk)
+
+    if request.method == "GET":
+        serializer = TodoModelSerializer(todo)
+
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = TodoModelSerializer(todo, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PATCH":
+        serializer = TodoModelSerializer(todo, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "DELETE":
+        todo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

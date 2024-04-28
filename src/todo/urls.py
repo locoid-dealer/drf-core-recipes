@@ -11,6 +11,8 @@ from .views import (
     TodoRetrieveAPIView,
     TodoUpdateAPIView,
     TodoViewSet,
+    todo_detail,
+    todo_list_create,
 )
 
 urlpatterns = [
@@ -99,5 +101,15 @@ urlpatterns = [
         "todo/detail_api_view/<int:pk>/",
         TodoDetailAPIView.as_view(),
         name="todo_detail_api_view",
+    ),
+    path(
+        "todo/todo_list_create/",
+        todo_list_create,
+        name="todo_list_create",
+    ),
+    path(
+        "todo/todo_detail/<int:pk>/",
+        todo_detail,
+        name="todo_detail",
     ),
 ]
