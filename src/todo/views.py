@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Todo
 from .serializers import TodoModelSerializer
@@ -108,3 +109,61 @@ class TodoDestroyAPIView(generics.DestroyAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodoModelSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class TodoAPIView(APIView):
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        queryset = Todo.objects.all()
+        serializer = self.serializer_class(queryset, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TodoDetailAPIView(APIView):
+    serializer_class = TodoModelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk=None):
+        queryset = Todo.objects.all()
+        todo = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(todo)
+
+        return Response(serializer.data)
+
+    def put(self, request, pk=None):
+        queryset = Todo.objects.all()
+        todo = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(todo, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk=None):
+        queryset = Todo.objects.all()
+        todo = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(todo, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None):
+        queryset = Todo.objects.all()
+        todo = get_object_or_404(queryset, pk=pk)
+        todo.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

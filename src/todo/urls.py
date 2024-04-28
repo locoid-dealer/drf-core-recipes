@@ -1,8 +1,10 @@
 from django.urls import path
 
 from .views import (
+    TodoAPIView,
     TodoCreateAPIView,
     TodoDestroyAPIView,
+    TodoDetailAPIView,
     TodoGenericViewSet,
     TodoListAPIView,
     TodoModelViewSet,
@@ -87,5 +89,15 @@ urlpatterns = [
         "todo/destroy_api_view/<int:pk>/",
         TodoDestroyAPIView.as_view(),
         name="todo_destroy_api_view",
+    ),
+    path(
+        "todo/api_view/",
+        TodoAPIView.as_view(),
+        name="todo_api_view",
+    ),
+    path(
+        "todo/detail_api_view/<int:pk>/",
+        TodoDetailAPIView.as_view(),
+        name="todo_detail_api_view",
     ),
 ]
